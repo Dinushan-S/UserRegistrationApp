@@ -1,5 +1,80 @@
-﻿<h3>Register</h3>
+﻿@page "/register"
+@using UserRegistrationApp.Data
+@using UserRegistrationApp.Models
+@using Microsoft.AspNetCore.Components.Forms
+@inject IUserService UserService
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="user" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+
+    <div class="form-group">
+        <label for="username">Username:</label>
+        <InputText id="username" class="form-control" @bind-Value="user.Username" />
+        <ValidationMessage For="@(() => user.Username)" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText id="email" class="form-control" @bind-Value="user.Email" />
+        <ValidationMessage For="@(() => user.Email)" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="user.Password" />
+        <ValidationMessage For="@(() => user.Password)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Register</button>
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger" role="alert">
+        @errorMessage
+    </div>
+}
 
 @code {
+    private User user = new User();
+    private string? errorMessage;
 
+
+    private async Task HandleValidSubmit()
+    {
+        try
+        {
+            Console.WriteLine($"Registration result: try work");
+            var result = await AuthenticationService.Register(name: user.Username, email: user.Email, password: user.Password);
+            //var result = await UserService.CreateUser(user);
+            Console.WriteLine($"Registration result: {result}");
+            if (result)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                if (result == false)
+                {
+                    Console.WriteLine("user already exixt");
+                    errorMessage = "User already exists.";
+                }
+                else
+                {
+                    errorMessage = "Registration failed. Please try again.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Registration failed: {ex.InnerException?.Message}";
+            Console.WriteLine(errorMessage);
+            Console.WriteLine($"Registration result: {user.Username}");
+            Console.WriteLine($"Registration result: {user.Email}");
+            Console.WriteLine($"Registration result: {user.Password}");
+
+        }
+    }
 }

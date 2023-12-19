@@ -1,0 +1,71 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+@page "/login"
+@using UserRegistrationApp.Data
+@using UserRegistrationApp.Models
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="loginModel" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText id="password" type="password" class="form-control" @bind-Value="loginModel.Password" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Log in</button>
+    <button class="btn btn-secondary" @onclick="NavigateToRegister">Register</button>
+
+</EditForm>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <div class="alert alert-danger">@errorMessage</div>
+}
+
+@code {
+    private LoginModel loginModel = new LoginModel();
+    private string errorMessage = string.Empty;
+
+    private async Task HandleValidSubmit()
+    {
+        @if (loginModel.Email != null && loginModel.Password != null)
+        {
+            var result = await AuthenticationService.Login(loginModel.Email, loginModel.Password);
+            if (result)
+            {
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                errorMessage = "Login failed. Please check your username and password.";
+            }
+        }
+        else
+        {
+            errorMessage = "Login failed. Please check your username and password.";
+        }
+    }
+
+    public class LoginModel
+    {
+        [Required]
+        [EmailAddress]
+        public string? Email { get; set; }
+
+        [Required]
+        public string? Password { get; set; }
+    }
+
+    private void NavigateToRegister()
+    {
+        NavigationManager.NavigateTo("/register");
+    }
+}

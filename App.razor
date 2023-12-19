@@ -1,7 +1,44 @@
-﻿<Router AppAssembly="@typeof(App).Assembly">
+﻿@using UserRegistrationApp.Data
+@inject IAuthenticationService AuthenticationService
+@inject NavigationManager NavigationManager
+@* @using UserRegistrationApp.Components *@
+
+@* @code {
+private bool IsLoggedIn { get; set; }
+
+protected override async Task OnInitializedAsync()
+{
+var isLoggedIn = await AuthenticationService.IsLoggedIn();
+var url = NavigationManager.Uri;
+
+if (!isLoggedIn && !url.EndsWith("/login"))
+{
+NavigationManager.NavigateTo("/login", forceLoad: true);
+}
+}
+} *@
+
+<Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
+            <NotAuthorized>
+                @if (!NavigationManager.Uri.EndsWith("/login"))
+                {
+                    NavigationManager.NavigateTo("/login", forceLoad: true);
+                }
+            </NotAuthorized>
+        </AuthorizeRouteView>
+        @* @if (IsLoggedIn)
+        {
+        <RouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        }
+        else
+        {
+        NavigationManager.NavigateTo("/");
+        } *@
+        @* <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" /> *@
     </Found>
     <NotFound>
         <PageTitle>Not found</PageTitle>
@@ -10,3 +47,23 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code {
+    private bool IsLoggedIn { get; set; }
+    private bool firstRender = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (this.firstRender)
+        {
+            this.firstRender = false;
+            IsLoggedIn = await AuthenticationService.IsLoggedIn();
+            var url = NavigationManager.Uri;
+
+            if (!IsLoggedIn && !url.EndsWith("/login"))
+            {
+                NavigationManager.NavigateTo("/login");
+            }
+        }
+    }
+}
