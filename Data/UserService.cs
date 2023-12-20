@@ -28,9 +28,7 @@ public class UserService : IUserService
         {
             throw new InvalidOperationException("Users DbSet is null");
         }
-
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-        Console.WriteLine($"User1: {user}");
         if (user != null)
         {
             return user;

@@ -1,68 +1,49 @@
 ﻿@using UserRegistrationApp.Data
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
-@* @using UserRegistrationApp.Components *@
 
-@* @code {
-private bool IsLoggedIn { get; set; }
-
-protected override async Task OnInitializedAsync()
-{
-var isLoggedIn = await AuthenticationService.IsLoggedIn();
-var url = NavigationManager.Uri;
-
-if (!isLoggedIn && !url.EndsWith("/login"))
-{
-NavigationManager.NavigateTo("/login", forceLoad: true);
-}
-}
-} *@
-
-<Router AppAssembly="@typeof(App).Assembly">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
-            <NotAuthorized>
-                @if (!NavigationManager.Uri.EndsWith("/login"))
-                {
-                    NavigationManager.NavigateTo("/login", forceLoad: true);
-                }
-            </NotAuthorized>
-        </AuthorizeRouteView>
-        @* @if (IsLoggedIn)
-        {
-        <RouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-        }
-        else
-        {
-        NavigationManager.NavigateTo("/");
-        } *@
-        @* <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" /> *@
-    </Found>
-    <NotFound>
-        <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
-        </LayoutView>
-    </NotFound>
-</Router>
-
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="typeof(MainLayout)">
+                <NotAuthorized>
+                    @if (!NavigationManager.Uri.EndsWith("/login"))
+                    {
+                        NavigationManager.NavigateTo("/login", forceLoad: true);
+                    }
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
 @code {
     private bool IsLoggedIn { get; set; }
-    private bool firstRender = true;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    @* protected override void OnInitializedAsync()
+{
+IsLoggedIn = await AuthenticationService.IsAuthenticated;
+} *@
+
+    protected override void OnAfterRender(bool firstRender)
     {
-        if (this.firstRender)
+        if (firstRender)
         {
-            this.firstRender = false;
-            IsLoggedIn = await AuthenticationService.IsLoggedIn();
             var url = NavigationManager.Uri;
+            //var isLoggedIn = AuthenticationService.IsAuthenticated;
 
-            if (!IsLoggedIn && !url.EndsWith("/login"))
+            if (url.EndsWith("/login"))
             {
-                NavigationManager.NavigateTo("/login");
+                IsLoggedIn = false;
+            }
+            else
+            {
+                IsLoggedIn = true;
             }
         }
     }

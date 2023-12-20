@@ -28,6 +28,8 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Register</button>
+    <button class="btn btn-secondary" @onclick="NavigateToRegister">Login</button>
+
 </EditForm>
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -76,5 +78,9 @@
             Console.WriteLine($"Registration result: {user.Password}");
 
         }
+    }
+    private void NavigateToRegister()
+    {
+        NavigationManager.NavigateTo("/login");
     }
 }

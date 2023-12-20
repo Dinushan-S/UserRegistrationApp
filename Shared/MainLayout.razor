@@ -1,36 +1,25 @@
 ﻿@inherits LayoutComponentBase
 @using UserRegistrationApp.Data
 @inject IAuthenticationService AuthenticationService
-@inject AuthenticationStateProvider AuthenticationStateProvider
-
+@inject CustomAuthStateProvider AuthStateProvider
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 <PageTitle>UserRegistrationApp</PageTitle>
 
 <div class="page">
-    @if(IsAuthenticated)
-    {
-        Console.WriteLine(IsAuthenticated);
-        <div class="top-row px-4 auth">
-            @* <a href="https://docs.microsoft.com/aspnet/" target="_blank">Hello, @AuthenticationService.UserEmail!</a> *@
-            @* <button class="btn btn-sm btn-danger ml-2" @onclick="AuthenticationService.Logout">Logout</button> *@
-        </div>
-    }
-    else
-    {
-        Console.WriteLine(IsAuthenticated);
-        <div class="top-row px-4 auth">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank"></a>
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">Hello, Guest!</a>
-            @* <button class="btn btn-sm btn-success ml-2" @onclick="AuthenticationService.Login">Login</button> *@
-        </div>
-    }
-    @if (IsAuthenticated)
-{
     <div class="sidebar">
         <NavMenu />
     </div>
-}
-    
+    <AuthorizeView>
+        <Authorized>
+            <div class="top-row px-4 auth">
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank"></a>
+                <a href="https://docs.microsoft.com/aspnet/" target="_blank">Hello,
+                    @LocalStorage.GetItemAsStringAsync("email")</a>
+                @* <button class="btn btn-sm btn-success ml-2" @onclick="AuthenticationService.Login">Login</button> *@
+            </div>
+        </Authorized>
+    </AuthorizeView>
 
     <main>
         <div class="top-row px-4">
@@ -44,56 +33,16 @@
 </div>
 
 @code {
-    private bool IsAuthenticated { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-    Console.WriteLine($"AuthenticationState: {authState}");
-    Console.WriteLine($"ClaimsIdentity: {authState.User.Identity}");
-
-    if (authState?.User?.Identity != null)
-    {
-        IsAuthenticated = authState.User.Identity.IsAuthenticated;
-        Console.WriteLine($"IsAuthenticated: {IsAuthenticated}");
-    }
-    else
-    {
-        IsAuthenticated = false;
-    }
-
-        AuthenticationStateProvider.AuthenticationStateChanged += OnAuthenticationStateChanged;
-    }
-    
-
- private void OnAuthenticationStateChanged(Task<AuthenticationState> task)
-{
-    var authState = task.Result;
-    if (authState?.User?.Identity != null)
-    {
-        IsAuthenticated = authState.User.Identity.IsAuthenticated;
-    }
-    else
-    {
-        IsAuthenticated = false;
-    }
-
-    InvokeAsync(StateHasChanged);
-}
-
-    public void Dispose()
-    {
-        AuthenticationStateProvider.AuthenticationStateChanged -= OnAuthenticationStateChanged;
-    }
-    private bool firstRender = true;
+    private bool IsAuthenticated;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (this.firstRender)
+        if (firstRender)
         {
-            this.firstRender = false;
-            IsAuthenticated = await AuthenticationService.IsLoggedIn();
-            StateHasChanged();
+            await AuthStateProvider.InitializeAsync();
         }
     }
+
+
+
 }

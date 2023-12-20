@@ -1,10 +1,13 @@
 ﻿@using System.ComponentModel.DataAnnotations
 
 @page "/login"
+@using Blazored.LocalStorage;
 @using UserRegistrationApp.Data
 @using UserRegistrationApp.Models
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
+@inject AuthenticationStateProvider AuthStateProvoder
 
 <EditForm Model="loginModel" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -38,6 +41,8 @@
     {
         @if (loginModel.Email != null && loginModel.Password != null)
         {
+            await LocalStorage.SetItemAsync<string>("email", loginModel.Email);
+            await AuthStateProvoder.GetAuthenticationStateAsync();
             var result = await AuthenticationService.Login(loginModel.Email, loginModel.Password);
             if (result)
             {
