@@ -11,6 +11,7 @@ public interface IAuthenticationService
 {
     Task<bool> Login(string email, string password);
     Task<bool> Register(string name, string email, string password);
+    Task<bool> Register2(User model);
 }
 
 public class AuthenticationService : IAuthenticationService
@@ -33,15 +34,43 @@ public class AuthenticationService : IAuthenticationService
             return false;
         }
 
-        string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
+        // string hashedPassword = BCrypt.Net.BCrypt.HashPassword(password);
 
         // Create a new User object
         var user = new User
         {
             Username = name,
             Email = email,
-            Password = hashedPassword
+            // Password = hashedPassword
         };
+
+        user.SetPassword(password);
+
+        await _userService.CreateUser(user);
+
+        return true;
+    }
+
+    public async Task<bool> Register2(User model)
+    {
+        var existingUser = await _userService.GetUserByEmail(model.Email);
+
+        if (existingUser != null)
+        {
+            // User already exists
+            return false;
+        }
+
+        // string hashedPassword = BCrypt.Net.BCrypt.HashPassword(model.Password);
+
+        // Create a new User object
+        var user = new User
+        {
+            Username = model.Username,
+            Email = model.Username,
+        };
+
+        // user.SetPassword();
 
         await _userService.CreateUser(user);
 
@@ -59,7 +88,7 @@ public class AuthenticationService : IAuthenticationService
             return false;
         }
 
-        bool isValidPassword = BCrypt.Net.BCrypt.Verify(password, user.Password);
+        bool isValidPassword = user.VerifyPassword(password);
         Console.WriteLine($"isvalidat {isValidPassword}");
         return isValidPassword;
 

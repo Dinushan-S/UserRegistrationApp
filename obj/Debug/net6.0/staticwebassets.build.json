@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "1/pToIMis4uMwLWtxu9RkTOc8/FPULP0VzG3GoTqPuY=",
+  "Hash": "5A43JQt5JrzMOIt00QUeDiWr/YPLc1VGKVIoDJwjW38=",
   "Source": "UserRegistrationApp",
   "BasePath": "_content/UserRegistrationApp",
   "Mode": "Default",
@@ -83,23 +83,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\bootstrap\\bootstrap.min.css.map"
-    },
-    {
-      "Identity": "C:\\Users\\selva\\Desktop\\blazor\\UserRegistrationApp\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
-      "SourceId": "UserRegistrationApp",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\selva\\Desktop\\blazor\\UserRegistrationApp\\wwwroot\\",
-      "BasePath": "_content/UserRegistrationApp",
-      "RelativePath": "css/open-iconic/FONT-LICENSE",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\css\\open-iconic\\FONT-LICENSE"
     },
     {
       "Identity": "C:\\Users\\selva\\Desktop\\blazor\\UserRegistrationApp\\wwwroot\\css\\open-iconic\\font\\css\\open-iconic-bootstrap.min.css",
@@ -202,6 +185,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\open-iconic\\font\\fonts\\open-iconic.woff"
+    },
+    {
+      "Identity": "C:\\Users\\selva\\Desktop\\blazor\\UserRegistrationApp\\wwwroot\\css\\open-iconic\\FONT-LICENSE",
+      "SourceId": "UserRegistrationApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\selva\\Desktop\\blazor\\UserRegistrationApp\\wwwroot\\",
+      "BasePath": "_content/UserRegistrationApp",
+      "RelativePath": "css/open-iconic/FONT-LICENSE",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\open-iconic\\FONT-LICENSE"
     },
     {
       "Identity": "C:\\Users\\selva\\Desktop\\blazor\\UserRegistrationApp\\wwwroot\\css\\open-iconic\\ICON-LICENSE",

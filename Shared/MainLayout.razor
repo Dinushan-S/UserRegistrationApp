@@ -10,18 +10,18 @@
     <div class="sidebar">
         <NavMenu />
     </div>
-    <AuthorizeView>
-        <Authorized>
-            <div class="top-row px-4 auth">
-                <a href="https://docs.microsoft.com/aspnet/" target="_blank"></a>
-                <a href="https://docs.microsoft.com/aspnet/" target="_blank">Hello,
-                    @LocalStorage.GetItemAsStringAsync("email")</a>
-                @* <button class="btn btn-sm btn-success ml-2" @onclick="AuthenticationService.Login">Login</button> *@
-            </div>
-        </Authorized>
-    </AuthorizeView>
-
     <main>
+        <AuthorizeView>
+            <Authorized>
+                <div class="top-row px-4 auth">
+                    <a href="https://docs.microsoft.com/aspnet/" target="_blank"></a>
+                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">Hello,
+                        @userEmail</a>
+                    @* <button class="btn btn-sm btn-success ml-2" @onclick="AuthenticationService.Login">Login</button>
+                    *@
+                </div>
+            </Authorized>
+        </AuthorizeView>
         <div class="top-row px-4">
             <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
         </div>
@@ -34,15 +34,16 @@
 
 @code {
     private bool IsAuthenticated;
+    private string? userEmail;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
             await AuthStateProvider.InitializeAsync();
+            userEmail = await LocalStorage.GetItemAsync<string>("email");
+            StateHasChanged();
         }
     }
-
-
 
 }

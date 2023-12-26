@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using BCrypt.Net;
 
 namespace UserRegistrationApp.Models
 {
@@ -21,8 +22,21 @@ namespace UserRegistrationApp.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        // Make the Password property private (Encapsulation)
         [Required]
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters long.")]
-        public string Password { get; set; }
+        private string Password { get; set; }
+
+        // Create a public method to set the password
+        public void SetPassword(string password)
+        {
+            Password = BCrypt.Net.BCrypt.HashPassword(password);
+        }
+
+        // Create a public method to check the password
+        public bool VerifyPassword(string password)
+        {
+            return BCrypt.Net.BCrypt.Verify(password, this.Password);
+        }
     }
 }

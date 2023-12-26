@@ -6,13 +6,13 @@
 @using UserRegistrationApp.Models
 @inject IAuthenticationService AuthenticationService
 @inject NavigationManager NavigationManager
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage;
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthStateProvoder
 
 <EditForm Model="loginModel" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
+    <h1>Login</h1>
     <div class="form-group">
         <label for="email">Email</label>
         <InputText id="email" class="form-control" @bind-Value="loginModel.Email" />
@@ -46,7 +46,7 @@
             var result = await AuthenticationService.Login(loginModel.Email, loginModel.Password);
             if (result)
             {
-                NavigationManager.NavigateTo("/");
+                NavigationManager.NavigateTo("/", forceLoad: true);
             }
             else
             {
